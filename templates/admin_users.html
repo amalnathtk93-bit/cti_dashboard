@@ -4,7 +4,7 @@
 {% block content %}
 
 <!-- ===== PAGE HEADER ===== -->
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-2">
   <div>
     <h1 class="h4 fw-semibold mb-1">
       User Management
@@ -36,7 +36,7 @@
     <form method="POST" class="row g-3">
       <input type="hidden" name="action" value="create">
 
-      <div class="col-md-4">
+      <div class="col-12 col-md-4">
         <label class="form-label small">Username</label>
         <input type="text"
                name="username"
@@ -45,7 +45,7 @@
                required>
       </div>
 
-      <div class="col-md-4">
+      <div class="col-12 col-md-4">
         <label class="form-label small">Password</label>
         <input type="password"
                name="password"
@@ -54,7 +54,7 @@
                required>
       </div>
 
-      <div class="col-md-3">
+      <div class="col-8 col-md-3">
         <label class="form-label small">Role</label>
         <select name="role" class="form-select form-select-sm">
           <option value="analyst">Analyst</option>
@@ -62,7 +62,7 @@
         </select>
       </div>
 
-      <div class="col-md-1 d-flex align-items-end">
+      <div class="col-4 col-md-1 d-flex align-items-end">
         <button class="btn btn-primary btn-sm w-100">
           Create
         </button>
@@ -81,12 +81,12 @@
   <div class="panel-header">
     <h2 class="panel-title">Existing Users</h2>
   </div>
-  <div class="panel-body">
+  <div class="panel-body p-0">
 
     {% if users %}
     <div class="table-responsive">
       <table class="table table-dark table-sm align-middle mb-0">
-        <thead>
+        <thead class="d-none d-md-table-header-group">
           <tr class="text-muted small">
             <th>Username</th>
             <th>Role</th>
@@ -98,21 +98,25 @@
 
         {% for u in users %}
           <tr>
-            <td class="fw-semibold">{{ u.username }}</td>
+            <!-- USERNAME -->
+            <td class="fw-semibold">
+              {{ u.username }}
+              <div class="d-md-none text-muted small">
+                Role: {{ u.role }}
+              </div>
+            </td>
 
-            <!-- ROLE -->
-            <td>
+            <!-- ROLE (DESKTOP) -->
+            <td class="d-none d-md-table-cell">
               {% if u.username != "admin" and u.id != current_user.id %}
                 <form method="POST"
                       action="{{ url_for('auth.update_user_role', user_id=u.id) }}"
                       class="d-flex gap-2">
                   <select name="role" class="form-select form-select-sm">
-                    <option value="analyst"
-                      {% if u.role == "analyst" %}selected{% endif %}>
+                    <option value="analyst" {% if u.role == "analyst" %}selected{% endif %}>
                       Analyst
                     </option>
-                    <option value="admin"
-                      {% if u.role == "admin" %}selected{% endif %}>
+                    <option value="admin" {% if u.role == "admin" %}selected{% endif %}>
                       Admin
                     </option>
                   </select>
@@ -122,9 +126,9 @@
                 </form>
               {% else %}
                 {% if u.role == "admin" %}
-                  <span class="badge bg-danger">👑 Admin</span>
+                  <span class="badge bg-danger">Admin</span>
                 {% else %}
-                  <span class="badge bg-secondary">👤 Analyst</span>
+                  <span class="badge bg-secondary">Analyst</span>
                 {% endif %}
               {% endif %}
             </td>
@@ -138,7 +142,7 @@
               {% endif %}
             </td>
 
-            <!-- DELETE -->
+            <!-- ACTIONS -->
             <td class="text-end">
               {% if u.username != "admin" and u.id != current_user.id %}
                 <form method="POST"
