@@ -244,3 +244,14 @@ body {
     transform: translateY(0);
   }
 }
+/* Mobile screen fix */
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+
+  .main-panel {
+    width: 100%;
+    margin-left: 0;
+  }
+}
