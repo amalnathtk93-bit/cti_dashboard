@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}IOC Lookup{% endblock %}
+{% block content %}
+
+<h1 class="mb-4 text-light">IOC Lookup</h1>
+<p class="text-muted mb-4">
+  Query IP addresses, domains, URLs, and file hashes against VirusTotal to get threat intelligence.
+</p>
+
+{% if error %}
+<div class="alert alert-danger alert-sm py-2">{{ error }}</div>
+{% endif %}
+
+<div class="glass-card p-4 mb-4">
+  <form method="POST" class="row g-3">
+    <div class="col-md-3">
+      <label class="form-label text-light">IOC Type</label>
+      <select name="ioc_type" class="form-select glass-input">
+        <option value="ip" {% if selected_type == "ip" %}selected{% endif %}>IP Address</option>
+        <option value="domain" {% if selected_type == "domain" %}selected{% endif %}>Domain</option>
+        <option value="url" {% if selected_type == "url" %}selected{% endif %}>URL</option>
+        <option value="hash" {% if selected_type == "hash" %}selected{% endif %}>File Hash</option>
+      </select>
+    </div>
+    <div class="col-md-7">
+      <label class="form-label text-light">Value</label>
+      <input
+        type="text"
+        name="value"
+        class="form-control glass-input"
+        placeholder="e.g. 8.8.8.8, example.com, https://site.com, or SHA256 hash"
+        value="{{ value }}"
+        required
+      >
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+      <button type="submit" class="btn btn-primary w-100">Lookup</button>
+    </div>
+  </form>
+</div>
+
+{% if parsed %}
+<div class="glass-card p-4">
+  <h4 class="text-light mb-3">Threat Intelligence Summary</h4>
+  <div class="row g-3">
+    <div class="col-md-6">
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item bg-transparent text-light">
+          <strong>Type:</strong> {{ parsed.ioc_type|upper }}
+        </li>
+        <li class="list-group-item bg-transparent text-light">
+          <strong>Value:</strong> {{ parsed.value }}</strong>
+        </li>
+        <li class="list-group-item bg-transparent text-light">
+          <strong>Malicious:</strong> <span class="text-danger">{{ parsed.malicious }}</span>
+        </li>
+        <li class="list-group-item bg-transparent text-light">
+          <strong>Harmless:</strong> <span class="text-success">{{ parsed.harmless }}</span>
+        </li>
+        <li class="list-group-item bg-transparent text-light">
+          <strong>Suspicious:</strong> <span class="text-warning">{{ parsed.suspicious }}</span>
+        </li>
+        <li class="list-group-item bg-transparent text-light">
+          <strong>Undetected:</strong> {{ parsed.undetected }}</li>
+        <li class="list-group-item bg-transparent text-light">
+          <strong>Reputation:</strong> {{ parsed.reputation }}</li>
+        <li class="list-group-item bg-transparent text-light">
+          <strong>Last Analysis:</strong> {{ parsed.last_analysis_date }}</li>
+      </ul>
+    </div>
+    <div class="col-md-6">
+      <ul class="list-group list-group-flush">
+        {% if parsed.country %}
+        <li class="list-group-item bg-transparent text-light">
+          <strong>Country (IP):</strong> {{ parsed.country }}
+        </li>
+        {% endif %}
+        {% if parsed.as_owner %}
+        <li class="list-group-item bg-transparent text-light">
+          <strong>Owner / ASN (IP):</strong> {{ parsed.as_owner }}
+        </li>
+        {% endif %}
+        {% if parsed.type_description %}
+        <li class="list-group-item bg-transparent text-light">
+          <strong>Type:</strong> {{ parsed.type_description }}
+        </li>
+        {% endif %}
+        {% if parsed.meaningful_name %}
+        <li class="list-group-item bg-transparent text-light">
+          <strong>Meaningful Name:</strong> {{ parsed.meaningful_name }}</li>
+        {% endif %}
+        {% if parsed.categories %}
+        <li class="list-group-item bg-transparent text-light">
+          <strong>Categories:</strong>
+          <pre class="mb-0 text-muted" style="white-space: pre-wrap;">{{ parsed.categories | tojson(indent=2) }}</pre>
+        </li>
+        {% endif %}
+        {% if parsed.tags %}
+        <li class="list-group-item bg-transparent text-light">
+          <strong>Tags:</strong><br>
+          {% for t in parsed.tags %}
+            <span class="badge bg-secondary me-1 mb-1">{{ t }}</span>
+          {% endfor %}
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

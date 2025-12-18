@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Ticket #{{ ticket.id }}{% endblock %}
+{% block content %}
+
+<h1 class="mb-4 text-light">Ticket #{{ ticket.id }} - {{ ticket.title }}</h1>
+
+<div class="glass-card p-4 mb-4">
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item bg-transparent text-light">
+      <strong>Severity:</strong> {{ ticket.severity|capitalize }}
+    </li>
+    <li class="list-group-item bg-transparent text-light">
+      <strong>Status:</strong> {{ ticket.status|replace("_", " ")|capitalize }}
+    </li>
+    <li class="list-group-item bg-transparent text-light">
+      <strong>Related IOC:</strong> {{ ticket.ioc_value or "N/A" }}
+    </li>
+    <li class="list-group-item bg-transparent text-light">
+      <strong>Created By:</strong> {{ ticket.created_by }}
+    </li>
+    <li class="list-group-item bg-transparent text-light">
+      <strong>Created At:</strong> {{ ticket.created_at }}
+    </li>
+    {% if ticket.updated_at %}
+    <li class="list-group-item bg-transparent text-light">
+      <strong>Updated At:</strong> {{ ticket.updated_at }}
+    </li>
+    {% endif %}
+    <li class="list-group-item bg-transparent text-light">
+      <strong>Description:</strong><br>{{ ticket.description }}
+    </li>
+  </ul>
+</div>
+
+<div class="glass-card p-4">
+  <h4 class="text-light mb-3">Update Status</h4>
+  <form method="POST" class="row g-3">
+    <div class="col-md-4">
+      <label class="form-label text-light">Status</label>
+      <select name="status" class="form-select glass-input">
+        <option value="open" {% if ticket.status == "open" %}selected{% endif %}>Open</option>
+        <option value="in_progress" {% if ticket.status == "in_progress" %}selected{% endif %}>In Progress</option>
+        <option value="closed" {% if ticket.status == "closed" %}selected{% endif %}>Closed</option>
+      </select>
+    </div>
+    <div class="col-md-4 d-flex align-items-end">
+      <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+    <div class="col-12">
+      <a href="{{ url_for('tickets.list_tickets') }}" class="btn btn-link text-light">Back to tickets</a>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

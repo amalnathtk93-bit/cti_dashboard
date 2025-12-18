@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Tickets{% endblock %}
+{% block content %}
+
+<h1 class="mb-4 text-light">Incident Tickets</h1>
+<p class="text-muted mb-4">
+  Create and track incident tickets for suspicious IOCs.
+</p>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, msg in messages %}
+      <div class="alert alert-{{ category }} alert-sm py-1">{{ msg }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="glass-card p-4 mb-4">
+  <h4 class="text-light mb-3">New Ticket</h4>
+  <form method="POST" class="row g-3">
+    <div class="col-md-6">
+      <label class="form-label text-light">Title</label>
+      <input type="text" name="title" class="form-control glass-input" required>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label text-light">Severity</label>
+      <select name="severity" class="form-select glass-input">
+        <option value="low">Low</option>
+        <option value="medium" selected>Medium</option>
+        <option value="high">High</option>
+        <option value="critical">Critical</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label text-light">Related IOC (optional)</label>
+      <input type="text" name="ioc_value" class="form-control glass-input" placeholder="e.g. 8.8.8.8">
+    </div>
+    <div class="col-12">
+      <label class="form-label text-light">Description</label>
+      <textarea name="description" rows="3" class="form-control glass-input" required></textarea>
+    </div>
+    <div class="col-12 text-end">
+      <button type="submit" class="btn btn-primary">Create Ticket</button>
+    </div>
+  </form>
+</div>
+
+<div class="glass-card p-4">
+  <h4 class="text-light mb-3">Existing Tickets</h4>
+  {% if tickets %}
+  <div class="table-responsive">
+    <table class="table table-sm table-dark align-middle mb-0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Severity</th>
+          <th>Status</th>
+          <th>IOC</th>
+          <th>Created By</th>
+          <th>Created At</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for t in tickets %}
+        <tr>
+          <td>{{ t.id }}</td>
+          <td>{{ t.title }}</td>
+          <td>{{ t.severity|capitalize }}</td>
+          <td>{{ t.status|replace("_", " ")|capitalize }}</td>
+          <td>{{ t.ioc_value }}</td>
+          <td>{{ t.created_by }}</td>
+          <td>{{ t.created_at }}</td>
+          <td>
+            <a href="{{ url_for('tickets.ticket_detail', ticket_id=t.id) }}" class="btn btn-sm btn-outline-light">
+              View
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="text-muted mb-0">No tickets created yet.</p>
+  {% endif %}
+</div>
+
+{% endblock %}

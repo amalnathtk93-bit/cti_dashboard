@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% block title %}User Management{% endblock %}
+
+{% block content %}
+
+<!-- ===== PAGE HEADER ===== -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h1 class="h4 fw-semibold mb-1">
+      User Management
+      <span class="badge bg-secondary ms-2">{{ users|length }}</span>
+    </h1>
+    <div class="text-muted small">
+      Create and manage analyst accounts (Admin only)
+    </div>
+  </div>
+</div>
+
+<!-- ===== CREATE USER FORM ===== -->
+<div class="panel mb-4">
+  <div class="panel-header">
+    <h2 class="panel-title">Create New User</h2>
+  </div>
+  <div class="panel-body">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} small mb-2">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" class="row g-3">
+      <input type="hidden" name="action" value="create">
+
+      <div class="col-md-4">
+        <label class="form-label small">Username</label>
+        <input type="text"
+               name="username"
+               class="form-control form-control-sm"
+               placeholder="e.g. analyst01"
+               required>
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label small">Password</label>
+        <input type="password"
+               name="password"
+               class="form-control form-control-sm"
+               placeholder="Min 6 characters"
+               required>
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label small">Role</label>
+        <select name="role" class="form-select form-select-sm">
+          <option value="analyst">Analyst</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+
+      <div class="col-md-1 d-flex align-items-end">
+        <button class="btn btn-primary btn-sm w-100">
+          Create
+        </button>
+      </div>
+    </form>
+
+    <div class="small text-muted mt-3">
+      ⚠ Built-in <strong>admin</strong> account cannot be modified or removed.
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== USER LIST ===== -->
+<div class="panel">
+  <div class="panel-header">
+    <h2 class="panel-title">Existing Users</h2>
+  </div>
+  <div class="panel-body">
+
+    {% if users %}
+    <div class="table-responsive">
+      <table class="table table-dark table-sm align-middle mb-0">
+        <thead>
+          <tr class="text-muted small">
+            <th>Username</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+
+        {% for u in users %}
+          <tr>
+            <td class="fw-semibold">{{ u.username }}</td>
+
+            <!-- ROLE -->
+            <td>
+              {% if u.username != "admin" and u.id != current_user.id %}
+                <form method="POST"
+                      action="{{ url_for('auth.update_user_role', user_id=u.id) }}"
+                      class="d-flex gap-2">
+                  <select name="role" class="form-select form-select-sm">
+                    <option value="analyst"
+                      {% if u.role == "analyst" %}selected{% endif %}>
+                      Analyst
+                    </option>
+                    <option value="admin"
+                      {% if u.role == "admin" %}selected{% endif %}>
+                      Admin
+                    </option>
+                  </select>
+                  <button class="btn btn-outline-primary btn-sm">
+                    Update
+                  </button>
+                </form>
+              {% else %}
+                {% if u.role == "admin" %}
+                  <span class="badge bg-danger">👑 Admin</span>
+                {% else %}
+                  <span class="badge bg-secondary">👤 Analyst</span>
+                {% endif %}
+              {% endif %}
+            </td>
+
+            <!-- STATUS -->
+            <td>
+              {% if u.username == "admin" %}
+                <span class="badge bg-info text-dark">System</span>
+              {% else %}
+                <span class="badge bg-success">Active</span>
+              {% endif %}
+            </td>
+
+            <!-- DELETE -->
+            <td class="text-end">
+              {% if u.username != "admin" and u.id != current_user.id %}
+                <form method="POST"
+                      action="{{ url_for('auth.delete_user', user_id=u.id) }}"
+                      onsubmit="return confirm('Delete user {{ u.username }}?')"
+                      class="d-inline">
+                  <button class="btn btn-outline-danger btn-sm">
+                    Delete
+                  </button>
+                </form>
+              {% else %}
+                <span class="text-muted small">Locked</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+      <div class="text-center text-muted py-5">
+        <div class="fs-4 mb-2">👤</div>
+        No users found.
+      </div>
+    {% endif %}
+
+  </div>
+</div>
+
+{% endblock %}

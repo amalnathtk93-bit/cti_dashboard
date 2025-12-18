@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Register{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-center align-items-center vh-100-minus">
+  <div class="glass-card p-4 shadow-lg auth-card">
+    <h2 class="mb-3 text-center text-light">Create an account</h2>
+    <p class="text-muted text-center mb-4">Register to use the CTI Dashboard</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <div class="alert alert-{{ category }} alert-sm py-1">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+      <div class="mb-3">
+        <label class="form-label text-light">Username</label>
+        <input type="text" name="username" class="form-control glass-input" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label text-light">Password</label>
+        <input type="password" name="password" class="form-control glass-input" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label text-light">Confirm Password</label>
+        <input type="password" name="confirm" class="form-control glass-input" required>
+      </div>
+      <button type="submit" class="btn btn-primary w-100 mb-3">Register</button>
+      <div class="text-center text-muted small">
+        Already have an account?
+        <a href="{{ url_for('auth.login') }}" class="link-light">Login</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

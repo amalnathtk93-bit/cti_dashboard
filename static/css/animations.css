@@ -1,0 +1,140 @@
+/* =====================
+   GLOBAL MOTION SETTINGS
+===================== */
+:root {
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-fast: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* =====================
+   PAGE LOAD ANIMATION
+===================== */
+.page-animate {
+  animation: pageFadeIn 0.6s var(--ease-soft) both;
+}
+
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =====================
+   SIDEBAR ITEM MOTION
+===================== */
+.sidebar-link {
+  transition:
+    background 0.25s var(--ease-fast),
+    transform 0.25s var(--ease-fast),
+    box-shadow 0.25s var(--ease-fast);
+}
+
+.sidebar-link:hover {
+  transform: translateX(4px);
+}
+
+/* =====================
+   PANEL ENTRANCE
+===================== */
+.panel {
+  animation: panelReveal 0.5s var(--ease-soft) both;
+}
+
+@keyframes panelReveal {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* =====================
+   KPI MICRO-INTERACTION
+===================== */
+.kpi-card {
+  transition:
+    transform 0.3s var(--ease-soft),
+    box-shadow 0.3s var(--ease-soft);
+}
+
+.kpi-card:hover {
+  transform: translateY(-6px) scale(1.02);
+}
+
+/* =====================
+   MAP FADE-IN
+===================== */
+.map-container {
+  animation: mapReveal 0.8s var(--ease-soft) both;
+}
+
+@keyframes mapReveal {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* =====================
+   BUTTON FEEDBACK
+===================== */
+button,
+.btn {
+  transition:
+    transform 0.15s var(--ease-fast),
+    box-shadow 0.15s var(--ease-fast);
+}
+
+button:active,
+.btn:active {
+  transform: scale(0.97);
+}
+
+/* =====================
+   STATUS DOT PULSE
+===================== */
+.status-dot {
+  animation: pulse 2.2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 currentColor;
+  }
+  70% {
+    box-shadow: 0 0 0 8px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+/* =====================
+   TEXT SMOOTHING
+===================== */
+h1, h2, h3, h4 {
+  animation: textFade 0.5s var(--ease-soft) both;
+}
+
+@keyframes textFade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
